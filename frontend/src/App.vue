@@ -12,7 +12,7 @@ onMounted(() => {
 <template>
     <div data-theme="cupcake" class="w-screen h-screen overflow-scroll mx-auto bg-white">
         <NavBar></NavBar>
-        <div class="mt-10">
+        <div class="mt-10 flex items-center justify-center">
             <router-view />
         </div>
     </div>
