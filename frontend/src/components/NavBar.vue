@@ -2,16 +2,12 @@
 const menuItems = [
     {
         path: '/PartyWorldMember',
-        name: 'Nav1',
+        name: '錢櫃',
     },
     {
         path: '/HolidayMember',
-        name: 'Nav2'
+        name: '好樂迪'
     },
-    {
-        path: '/',
-        name: '123'
-    }
 ]
 </script>
 <template>

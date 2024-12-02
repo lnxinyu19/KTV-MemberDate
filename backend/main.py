@@ -64,6 +64,18 @@ def format_dates(raw_data: str) -> list:
 
     return result
 
+def process_member_dates(member_date_raw: list) -> list:
+    """
+    處理會員日資料，確保每月僅有一個條目，並正規化日期格式。
+    """
+    formatted_dates = []
+    for raw_date in member_date_raw[:12]:  # 僅取前 12 個欄位（對應 12 個月）
+        formatted = format_dates(raw_date)
+        # 合併日期清單成一個字串，使用 "、" 分隔，例如: ["1", "8", "15"] -> "1、8、15"
+        formatted_dates.append("、".join(formatted))
+
+    return formatted_dates
+
 def holiday_table():
     try:
         response = requests.get("https://www.holiday.com.tw/act/member/index.aspx")
@@ -162,10 +174,12 @@ def party_world_table():
                 # 提取每個年份的資料
                 for year, index in year_indices.items():
                     if index < len(cells):  # 確保索引有效
-                        member_date = [
+                        member_date_raw = [
                             cell.get_text(strip=True).replace("\n", ",").replace("<br>", ",")
                             for cell in cells[1:]  # 修改成從第二列開始提取資料
                         ]
+                        # 處理並格式化會員日資料
+                        member_date = process_member_dates(member_date_raw)
 
                         # 確保年份鍵存在於結果字典中
                         if year not in result:
@@ -177,7 +191,6 @@ def party_world_table():
                         })
 
         return result
-
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"HTTP 請求失敗: {e}")
     except Exception as e:
