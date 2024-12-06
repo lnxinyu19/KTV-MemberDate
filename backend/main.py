@@ -5,6 +5,8 @@ import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+
 from bs4 import BeautifulSoup
 
 app = FastAPI()
@@ -17,6 +19,8 @@ app.add_middleware(
     allow_headers=["*"],  # 允許的 HTTP 標頭
 )
 
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
 # 設置緩存及有效期
 memory_cache = {
     "holiday_data": {"data": None, "last_updated": None},
@@ -24,6 +28,7 @@ memory_cache = {
 }
 
 CACHE_EXPIRATION = timedelta(days=1)  # 緩存有效期設定為 1 天
+
 
 def fetch_with_memory_cache(key, fetch_func):
     now = datetime.now()
