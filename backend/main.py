@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],  # 允許的 HTTP 標頭
 )
 
-app.mount("/static", StaticFiles(directory="frontend/dist", html=True), name="static")
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 # 設置緩存及有效期
 memory_cache = {
