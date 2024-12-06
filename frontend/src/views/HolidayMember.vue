@@ -42,7 +42,7 @@ const toggleMark = (month: number) => {
 
 const getMemberDateTable = async () => {
     try {
-        const response = await fetch(`${API_BASE_URL}/holiday_data`)
+        const response = await fetch(`${API_BASE_URL}/api/holiday_data`)
         const data: IGetHolidayData[] = await response.json()
         const options = data.map((item) => item.area)
         areaOptions.value = areaOptions.value.concat(options);

@@ -44,7 +44,7 @@ const clearMark = () => {
 
 const getMemberDateTable = async () => {
     try {
-        const response = await fetch(`${API_BASE_URL}/party_world_data`)
+        const response = await fetch(`${API_BASE_URL}/api/party_world_data`)
         const data = await response.json()
 
         yearOptions.value = Object.keys(data)

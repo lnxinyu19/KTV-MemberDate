@@ -6,6 +6,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi import APIRouter
+
 
 from bs4 import BeautifulSoup
 
@@ -19,7 +21,9 @@ app.add_middleware(
     allow_headers=["*"],  # 允許的 HTTP 標頭
 )
 
-app.mount("/static", StaticFiles(directory="static", html=True), name="static")
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+api_router = APIRouter()
 
 # 設置緩存及有效期
 memory_cache = {
@@ -201,18 +205,16 @@ def party_world_table():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"資料爬取失敗: {e}")
 
-@app.post("/")
+@api_router.post("/")
 def read_root():
     return JSONResponse(content={"message": "Hello World"}, status_code=http.HTTPStatus.OK)
 
-@app.get("/holiday_data")
+@api_router.get("/holiday_data")
 def get_holiday():
     return fetch_with_memory_cache("holiday_data", holiday_table)
 
-@app.get("/party_world_data")
+@api_router.get("/party_world_data")
 def get_party_world():
     return fetch_with_memory_cache("party_world_data", party_world_table)
 
-@app.get("/debug_holiday_data")
-def debug_holiday_data():
-    return holiday_table()
+app.include_router(api_router, prefix="/api")
