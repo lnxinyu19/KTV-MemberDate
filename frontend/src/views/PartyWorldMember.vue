@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { months, isCurrentMonth, currentYear, currentMonth } from '@/utils/months';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface IGetPartyWorldData {
     [key: string]: IPartyWorldTableData[],
@@ -43,7 +44,7 @@ const clearMark = () => {
 
 const getMemberDateTable = async () => {
     try {
-        const response = await fetch('/api/party_world_data')
+        const response = await fetch(`${API_BASE_URL}/party_world_data`)
         const data = await response.json()
 
         yearOptions.value = Object.keys(data)

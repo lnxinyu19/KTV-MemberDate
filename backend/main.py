@@ -13,13 +13,13 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # 設定允許的來源
+    allow_origins=["*"],  # 設定允許的來源
     allow_credentials=True,
     allow_methods=["*"],  # 允許的 HTTP 方法
     allow_headers=["*"],  # 允許的 HTTP 標頭
 )
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 # 設置緩存及有效期
 memory_cache = {
@@ -212,3 +212,7 @@ def get_holiday():
 @app.get("/party_world_data")
 def get_party_world():
     return fetch_with_memory_cache("party_world_data", party_world_table)
+
+@app.get("/debug_holiday_data")
+def debug_holiday_data():
+    return holiday_table()
