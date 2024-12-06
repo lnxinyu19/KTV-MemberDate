@@ -21,8 +21,6 @@ app.add_middleware(
     allow_headers=["*"],  # 允許的 HTTP 標頭
 )
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
-
 api_router = APIRouter()
 
 # 設置緩存及有效期
@@ -217,4 +215,8 @@ def get_holiday():
 def get_party_world():
     return fetch_with_memory_cache("party_world_data", party_world_table)
 
+
 app.include_router(api_router, prefix="/api")
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
