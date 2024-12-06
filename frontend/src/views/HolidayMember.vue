@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { months, isCurrentMonth, currentMonth } from "@/utils/months";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface IStoreMemberDate {
     store: string,
@@ -41,7 +42,7 @@ const toggleMark = (month: number) => {
 
 const getMemberDateTable = async () => {
     try {
-        const response = await fetch('/holiday_data')
+        const response = await fetch(`${API_BASE_URL}/holiday_data`)
         const data: IGetHolidayData[] = await response.json()
         const options = data.map((item) => item.area)
         areaOptions.value = areaOptions.value.concat(options);
