@@ -225,5 +225,6 @@ if __name__ == "__main__":
     import uvicorn
     # 動態取得 Railway 分配的埠號
     port = int(os.environ.get("PORT", 8000))
+    print(f"Running on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
 
