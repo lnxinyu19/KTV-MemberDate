@@ -1,5 +1,6 @@
 # main.py
 from datetime import datetime, timedelta
+import os
 import http
 import requests
 from fastapi import FastAPI, HTTPException
@@ -221,9 +222,8 @@ app.include_router(api_router, prefix="/api")
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 if __name__ == "__main__":
-    import os
     import uvicorn
-
-    port = int(os.environ.get("PORT", 8000))  # 使用 Railway 分配的 PORT
-    uvicorn.run(app, host="0.0.0.0", port=port)  # 監聽所有網路介面
+    # 動態取得 Railway 分配的埠號
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
