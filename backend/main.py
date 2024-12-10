@@ -15,7 +15,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["cozy-vitality-production.up.railway.app"],  # 設定允許的來源
+    allow_origins=["https://cozy-vitality-production.up.railway.app"],  # 設定允許的來源
     allow_credentials=True,
     allow_methods=["*"],  # 允許的 HTTP 方法
     allow_headers=["*"],  # 允許的 HTTP 標頭
