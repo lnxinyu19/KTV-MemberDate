@@ -6,7 +6,6 @@ import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi import APIRouter
 
 
@@ -219,7 +218,7 @@ def get_party_world():
 
 app.include_router(api_router, prefix="/api")
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+# app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
