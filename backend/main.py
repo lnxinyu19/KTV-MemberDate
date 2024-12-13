@@ -3,14 +3,17 @@ from datetime import datetime, timedelta
 import os
 import http
 import requests
+from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Header
 from bs4 import BeautifulSoup
+
+load_dotenv()
 
 # 初始化 LINE API
 LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
@@ -225,11 +228,13 @@ def get_party_world():
     return fetch_with_memory_cache("party_world_data", party_world_table)
 
 @api_router.post("/linebot/webhook")
-async def linebot_webhook(request: dict, x_line_signature: str = Header(...)):
-    
-    body = await request.json()
+async def linebot_webhook(request: Request, x_line_signature: str = Header(...)):
+    body = await request.body()  # 取得原始的請求內容
+    decoded_body = body.decode("utf-8")  # 解碼為字串
+
     try:
-        handler.handle(body, x_line_signature)
+        # 驗證 LINE 的簽名
+        handler.handle(decoded_body, x_line_signature)
     except InvalidSignatureError:
         raise HTTPException(status_code=400, detail="Invalid signature")
     return "OK"
