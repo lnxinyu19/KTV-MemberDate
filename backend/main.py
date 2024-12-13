@@ -3,13 +3,22 @@ from datetime import datetime, timedelta
 import os
 import http
 import requests
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
-
-
 from bs4 import BeautifulSoup
+
+# 初始化 LINE API
+LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
+LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
+
+line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(LINE_CHANNEL_SECRET)
+
 
 app = FastAPI()
 
@@ -214,6 +223,24 @@ def get_holiday():
 @api_router.get("/party_world_data")
 def get_party_world():
     return fetch_with_memory_cache("party_world_data", party_world_table)
+
+@api_router.post("/linebot/webhook")
+async def linebot_webhook(request: dict, x_line_signature: str = Header(...)):
+    body = await request.json()
+    try:
+        handler.handle(body, x_line_signature)
+    except InvalidSignatureError:
+        raise HTTPException(status_code=400, detail="Invalid signature")
+    return "OK"
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_text_message(event):
+    user_message = event.message.text
+    reply_message = f"你說了: {user_message}"
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply_message)
+    )
 
 
 app.include_router(api_router, prefix="/api")
