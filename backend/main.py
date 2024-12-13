@@ -226,6 +226,7 @@ def get_party_world():
 
 @api_router.post("/linebot/webhook")
 async def linebot_webhook(request: dict, x_line_signature: str = Header(...)):
+    
     body = await request.json()
     try:
         handler.handle(body, x_line_signature)
